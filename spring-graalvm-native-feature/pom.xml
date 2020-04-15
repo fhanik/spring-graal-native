@@ -112,6 +112,34 @@
 					</filters>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>classlist-agent</classifier>
+							<includes>
+								<include>org/springframework/graalvm/util/ClassListAgent.class</include>
+							</includes>
+							<archive>
+								<index>false</index>
+								<addMavenDescriptor>false</addMavenDescriptor>
+								<manifestEntries>
+									<Premain-Class>org.springframework.graalvm.util.ClassListAgent</Premain-Class>
+									<Can-Redefine-Classes>true</Can-Redefine-Classes>
+									<Can-Retransform-Classes>true</Can-Retransform-Classes>
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
