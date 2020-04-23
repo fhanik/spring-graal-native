@@ -11,7 +11,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<tomcat.embed.version>9.0.30</tomcat.embed.version>
+		<tomcat.embed.version>9.0.36-dev</tomcat.embed.version>
 		<tomcat.main.class>com.example.tomcat.TomcatOnlyApplication</tomcat.main.class>
 	</properties>
 
@@ -26,16 +26,16 @@
 				<artifactId>tomcat-embed-core</artifactId>
 				<version>${tomcat.embed.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-el</artifactId>
-			<version>${tomcat.embed.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-websocket</artifactId>
-			<version>${tomcat.embed.version}</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.apache.tomcat.embed</groupId>-->
+<!--			<artifactId>tomcat-embed-el</artifactId>-->
+<!--			<version>${tomcat.embed.version}</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.apache.tomcat.embed</groupId>-->
+<!--			<artifactId>tomcat-embed-websocket</artifactId>-->
+<!--			<version>${tomcat.embed.version}</version>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>junit</groupId>
