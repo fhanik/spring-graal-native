@@ -15,18 +15,29 @@
     "allDeclaredMethods": true
   },
   {
-    "name": "org.springframework.web.servlet.view.BeanNameViewResolver",
+    "name": "org.springframework.boot.web.embedded.tomcat.TomcatEmbeddedWebappClassLoader",
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true
   },
   {
-    "name": "org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver",
+    "name": "org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory$StaticResourceConfigurer",
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true
   },
   {
-    "name": "org.springframework.boot.web.server.ErrorPageRegistrarBeanPostProcessor",
-    "allDeclaredConstructors": true
+    "name": "org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory$LoaderHidingResourceRoot",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "org.apache.catalina.valves.ErrorReportValve",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
   },
   {
     "name": "org.apache.tomcat.util.descriptor.web.ErrorPage",
@@ -59,32 +70,7 @@
     "allDeclaredMethods": true
   },
   {
-    "name": "org.springframework.boot.web.embedded.tomcat.TomcatEmbeddedWebappClassLoader",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory$StaticResourceConfigurer",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory$LoaderHidingResourceRoot",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.apache.catalina.valves.ErrorReportValve",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
     "name": "org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor",
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true
   },
@@ -100,46 +86,6 @@
   },
   {
     "name": "org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.function.support.RouterFunctionMapping",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.function.support.HandlerFunctionAdapter",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver",
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true
   },

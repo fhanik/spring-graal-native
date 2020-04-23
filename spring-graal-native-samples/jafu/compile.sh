@@ -42,6 +42,7 @@ echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
   -H:Name=$ARTIFACT \
   -H:+ReportExceptionStackTraces \
   -Dspring.graal.mode=initialization-only \
+  -H:+PrintAnalysisCallTree \
   -cp $CP $MAINCLASS >> output.txt ; } 2>> output.txt
 
 if [[ -f $ARTIFACT ]]
