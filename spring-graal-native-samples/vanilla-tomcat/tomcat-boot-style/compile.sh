@@ -5,7 +5,8 @@ set -e
 ARTIFACT=tomcat-boot-style
 MAINCLASS=com.example.tomcat.TomcatOnlyApplication
 VERSION=0.0.1-SNAPSHOT
-FEATURE=../../../../../spring-graal-native/target/spring-graal-native-0.7.0.BUILD-SNAPSHOT.jar
+FEATURE_VERSION=0.7.0.BUILD-SNAPSHOT
+FEATURE=../../../../../spring-graal-native/target/spring-graal-native-${FEATURE_VERSION}.jar
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -36,7 +37,23 @@ java -agentlib:native-image-agent=config-output-dir=graal/META-INF/native-image 
 PID=$!
 sleep 3
 curl -m 1 http://localhost:8080 > /dev/null 2>&1
-sleep 1 && kill $PID || kill -9 $PID
+sleep 1 && kill -9 $PID
+
+echo "Performing class analysis on $ARTIFACT"
+rm -f class_histogram.txt
+CLASS_AGENT=../../../../../spring-graal-native-feature/target/spring-graal-native-feature-${FEATURE_VERSION}-classlist-agent.jar
+rm -rf graal/META-INF 2>/dev/null
+mkdir -p graal/META-INF/native-image
+java -javaagent:$CLASS_AGENT -cp $CP $MAINCLASS >> output.txt 2>&1 &
+PID=$!
+sleep 3
+curl -m 1 http://localhost:8080 > /dev/null 2>&1
+sleep 1 && kill -9 $PID
+
+cat output.txt |grep "Class\-Agent\-Transform\: " 2>&1 > class_histogram.txt
+echo "Starting classpath reduction:"
+#java -cp $CP:$FEATURE org.springframework.graal.util.OptimizeClassPath `pwd` class_histogram.txt $CP  >> output.txt 2>&1
+
 
 GRAALVM_VERSION=`native-image --version`
 echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
@@ -49,6 +66,7 @@ echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
   -H:EnableURLProtocols=http,jar \
   -H:ResourceConfigurationFiles=../../tomcat-resource.json \
   -H:ReflectionConfigurationFiles=../../tomcat-reflection.json \
+  -H:+PrintAnalysisCallTree -H:+PrintGraphFile -H:+PrintImageObjectTree \
   -H:+TraceClassInitialization \
   -H:Name=$ARTIFACT \
   -H:+ReportExceptionStackTraces \

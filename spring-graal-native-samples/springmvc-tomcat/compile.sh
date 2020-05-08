@@ -3,7 +3,8 @@
 ARTIFACT=springmvc-tomcat
 MAINCLASS=com.example.tomcat.TomcatApplication
 VERSION=0.0.1-SNAPSHOT
-FEATURE=../../../../spring-graal-native/target/spring-graal-native-0.7.0.BUILD-SNAPSHOT.jar
+FEATURE_VERSION=0.7.0.BUILD-SNAPSHOT
+FEATURE=$HOME/.m2/repository/org/springframework/experimental/spring-graal-native/0.7.0.BUILD-SNAPSHOT/spring-graal-native-$FEATURE_VERSION.jar
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -30,6 +31,21 @@ if [ ! -f "$FEATURE" ]; then
     exit 1
 fi
 
+echo "Performing class analysis on $ARTIFACT"
+CLASS_AGENT=$HOME/.m2/repository/org/springframework/experimental/spring-graal-native-feature/0.7.0.BUILD-SNAPSHOT/spring-graal-native-feature-$FEATURE_VERSION-classlist-agent.jar
+rm -rf graal/META-INF 2>/dev/null
+mkdir -p graal/META-INF/native-image
+java -javaagent:$CLASS_AGENT -cp $CP $MAINCLASS >> output.txt 2>&1 &
+PID=$!
+sleep 3
+curl -m 1 http://localhost:8080 > /dev/null 2>&1
+sleep 1 && kill -9 $PID
+
+cat output.txt |grep "Class\-Agent\-Transform\: " 2>&1 > class_histogram.txt
+echo "Starting classpath reduction:" >> output.txt
+java -cp $CP org.springframework.graal.util.OptimizeClassPath `pwd` class_histogram.txt $CP  >> output.txt 2>&1
+#
+
 GRAALVM_VERSION=`native-image --version`
 echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
 { time native-image \
@@ -43,6 +59,7 @@ echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
   -Dsun.rmi.transport.tcp.maxConnectionThreads=0 \
   -Dspring.graal.remove-unused-autoconfig=true \
   -Dspring.graal.remove-yaml-support=true \
+  -Dspring.graal.verbose=true \
   -cp $CP $MAINCLASS >> output.txt ; } 2>> output.txt
 
 if [[ -f $ARTIFACT ]]

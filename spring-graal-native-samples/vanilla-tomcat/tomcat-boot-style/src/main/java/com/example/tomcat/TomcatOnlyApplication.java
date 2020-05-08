@@ -73,7 +73,7 @@ public class TomcatOnlyApplication {
 		Wrapper helloServlet = context.createWrapper();
 		String servletName = HelloFromTomcatServlet.class.getSimpleName();
 		helloServlet.setName(servletName);
-		helloServlet.setServletClass(HelloFromTomcatServlet.class.getName());
+		helloServlet.setServlet(new HelloFromTomcatServlet());
 		helloServlet.setLoadOnStartup(1);
 		helloServlet.setOverridable(true);
 		context.addChild(helloServlet);
