@@ -36,6 +36,7 @@ public class TomcatEmbeddedWebappClassLoader extends ParallelWebappClassLoader {
 	@Override
 	public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		synchronized (JreCompat.isGraalAvailable() ? this : getClassLoadingLock(name)) {
+			System.out.println("[Loaded "+name+" from com.example.tomcat.embed.TomcatEmbeddedWebappClassLoader]");
 			Class<?> result = findExistingLoadedClass(name);
 			result = (result != null) ? result : doLoadClass(name);
 			if (result == null) {

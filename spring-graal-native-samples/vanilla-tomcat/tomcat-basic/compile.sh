@@ -36,7 +36,18 @@ java -agentlib:native-image-agent=config-output-dir=graal/META-INF/native-image 
 PID=$!
 sleep 3
 curl -m 1 http://localhost:8080 > /dev/null 2>&1
-sleep 1 && kill $PID || kill -9 $PID
+sleep 1 && kill -9 $PID
+
+echo "Performing class analysis on $ARTIFACT"
+java -verbose:class -cp $CP $MAINCLASS >> output.txt 2>&1 &
+PID=$!
+sleep 3
+curl -m 1 http://localhost:8080 > /dev/null 2>&1
+sleep 1 && kill -9 $PID
+
+cat output.txt |grep "\[Loaded" 2>&1 > class_histogram.txt
+
+java -cp $CP:$FEATURE org.springframework.graal.util.OptimizeClassPath `pwd` class_histogram.txt $CP  >> output.txt 2>&1
 
 GRAALVM_VERSION=`native-image --version`
 echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
