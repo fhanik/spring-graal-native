@@ -50,10 +50,9 @@ public class OptimizeClassPath {
         Set<String> toBeDeleted = new HashSet<>();
         try (ZipFile zf  = new ZipFile(jar.toFile())) {
             zf.stream()
-                .filter(ze ->
-                        ze.getName().endsWith(".class")
-                        || ze.getName().endsWith(".xml")
-                        || ze.getName().endsWith(".properties")
+                .filter(ze -> ze.getName().endsWith(".class")
+                || ze.getName().endsWith(".xml")
+                || ze.getName().endsWith(".properties")
                 )
                 .forEach(
                     ze -> {
@@ -154,8 +153,7 @@ public class OptimizeClassPath {
 
 
             ,"org/apache/catalina/TomcatPrincipal.class" //runtime NoClassDefFoundError
-            ,"org/apache/catalina/servlets/DefaultServlet.class" //graal spring-feature
-            ,"org/apache/catalina/servlets/Target_DefaultServlet.class" //graal spring-feature
+            ,"org/springframework/context/i18n/TimeZoneAwareLocaleContext.class" //runtime NoClassDefFoundError
 
 
             ,"javax/servlet/http/LocalStrings.properties" //required resource
@@ -164,7 +162,6 @@ public class OptimizeClassPath {
 
 
             //new commits to master + sebastian optimized jafu-webmvc
-            ,"org/springframework/context/i18n/TimeZoneAwareLocaleContext.class" //runtime NoClassDefFoundError
             ,"org/springframework/core/io/support/EncodedResource.class" //graal NoClassDefFoundError
             ,"org/springframework/web/accept/ContentNegotiationManager.class" //graal spring-feature
             ,"org/springframework/web/method/ControllerAdviceBean.class" //graal spring-feature
@@ -176,6 +173,8 @@ public class OptimizeClassPath {
             ,"org/springframework/web/servlet/config/annotation/Target_WebMvcConfigurationSupport.class" //graal spring-feature
             ,"org/springframework/web/servlet/function/support/RouterFunctionMapping.class" //graal spring-feature
             ,"org/springframework/web/servlet/function/support/Target_RouterFunctionMapping.class" //graal spring-feature
+            ,"org/apache/catalina/servlets/DefaultServlet.class" //graal spring-feature
+            ,"org/apache/catalina/servlets/Target_DefaultServlet.class" //graal spring-feature
             ,"org/springframework/web/servlet/config/annotation/AsyncSupportConfigurer.class" //graal spring-feature
             ,"org/springframework/web/servlet/mvc/method/AbstractHandlerMethodAdapter.class" //graal spring-feature
             ,"org/springframework/web/servlet/config/annotation/ResourceHandlerRegistry.class" //graal spring-feature
@@ -204,143 +203,6 @@ public class OptimizeClassPath {
             ,"org/springframework/web/method/annotation/InitBinderDataBinderFactory.class" //graal spring-feature
             ,"org/springframework/web/servlet/mvc/method/annotation/ServletRequestDataBinderFactory.class" //graal spring-feature
             ,"org/springframework/core/ReactiveAdapterRegistry.class" //graal spring-feature
-            ,"org/springframework/web/bind/MissingServletRequestParameterException.class" //graal spring-feature
-            ,"org/springframework/web/servlet/mvc/support/DefaultHandlerExceptionResolver.class" //graal spring-feature
-            ,"org/springframework/web/bind/MissingPathVariableException.class" //graal spring-feature
-            ,"org/springframework/web/servlet/mvc/method/annotation/RequestBodyAdvice.class" //graal spring-feature
-            ,"org/springframework/web/bind/MethodArgumentNotValidException.class" //graal spring-feature
-            ,"org/springframework/web/bind/UnsatisfiedServletRequestParameterException.class" //graal spring-feature
-            ,"org/springframework/web/servlet/handler/HandlerMethodMappingNamingStrategy.class" //graal spring-feature
-            ,"org/springframework/web/multipart/support/MissingServletRequestPartException.class" //graal spring-feature
-            ,"org/springframework/web/servlet/mvc/condition/RequestCondition.class" //graal spring-feature
-            ,"org/springframework/web/servlet/mvc/method/annotation/ResponseBodyAdvice.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/admin/SpringApplicationAdminJmxAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/jmx/JmxAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/amqp/RabbitAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/batch/BatchAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/cache/CacheAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/couchbase/CouchbaseAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/hazelcast/HazelcastAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/redis/RedisAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/cassandra/CassandraAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/context/MessageSourceAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/dao/PersistenceExceptionTranslationAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/cassandra/CassandraDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/cassandra/CassandraReactiveDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/cassandra/CassandraReactiveRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/cassandra/CassandraRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/couchbase/CouchbaseDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/couchbase/CouchbaseReactiveDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/couchbase/CouchbaseReactiveRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/couchbase/CouchbaseRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/elasticsearch/ElasticsearchDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/elasticsearch/ElasticsearchRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/elasticsearch/ReactiveElasticsearchRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/elasticsearch/ReactiveElasticsearchRestClientAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/jdbc/JdbcRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/ldap/LdapRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/mongo/MongoDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/mongo/MongoReactiveDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/mongo/MongoReactiveRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/mongo/MongoRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/neo4j/Neo4jDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/neo4j/Neo4jRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/solr/SolrRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/r2dbc/R2dbcDataAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/r2dbc/R2dbcRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/r2dbc/R2dbcTransactionManagerAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/redis/RedisReactiveAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/redis/RedisRepositoriesAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/rest/RepositoryRestMvcAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/data/web/SpringDataWebAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchRestClientAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/freemarker/FreeMarkerAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/groovy/template/GroovyTemplateAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/h2/H2ConsoleAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/hateoas/HypermediaAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/hazelcast/HazelcastJpaDependencyAutoConfiguration.class" //graal spring-feature
-            ,"org/springframework/boot/autoconfigure/**" //graal spring-feature
-
-            ,"org/apache/logging/log4j/**" //graal spring-feature
-
-            ,"com/fasterxml/jackson/databind/ObjectMapper.class" //graal spring-feature
-            ,"com/fasterxml/jackson/databind/ObjectReader.class"
-            ,"com/fasterxml/jackson/core/io/OutputDecorator.class"
-            ,"com/fasterxml/jackson/core/JsonFactory.class"
-            ,"com/fasterxml/jackson/core/JsonEncoding.class"
-            ,"com/fasterxml/jackson/databind/ObjectMapper.class"
-            ,"com/fasterxml/jackson/databind/jsontype/NamedType.class"
-            ,"com/fasterxml/jackson/core/io/InputDecorator.class"
-            ,"com/fasterxml/jackson/core/FormatSchema.class"
-            ,"com/fasterxml/jackson/core/io/OutputDecorator;.class"
-            ,"com/fasterxml/jackson/databind/node/ArrayNode.class"
-            ,"com/fasterxml/jackson/core/io/OutputDecorator;.class"
-            ,"com/fasterxml/jackson/databind/node/ArrayNode.class"
-            ,"com/fasterxml/jackson/databind/deser/ValueInstantiator.class"
-            ,"com/fasterxml/jackson/annotation/JsonInclude.class"
-            ,"com/fasterxml/jackson/annotation/JsonAutoDetect.class"
-            ,"com/fasterxml/jackson/annotation/JsonSetter.class"
-            ,"com/fasterxml/jackson/core/io/CharacterEscapes.class"
-            ,"com/fasterxml/jackson/databind/module/SimpleValueInstantiators.class"
-            ,"com/fasterxml/jackson/databind/InjectableValues.class"
-
-            ,"org/apache/catalina/TrackedWebResource.class"
-            ,"org/springframework/web/servlet/ModelAndView.class"
-            ,"org/springframework/web/servlet/handler/RequestMatchResult.class"
-            ,"org/springframework/web/bind/annotation/CrossOrigin.class"
-            ,"org/springframework/core/io/ProtocolResolver.class"
-            ,"org/springframework/web/servlet/handler/AbstractHandlerMapping.class"
-            ,"org/springframework/web/HttpRequestHandler.class"
-            ,"org/springframework/web/context/request/async/AsyncRequestTimeoutException.class"
-            ,"org/springframework/web/servlet/handler/AbstractHandlerMapping.class"
-            ,"org/springframework/web/server/ResponseStatusException.class"
-            ,"org/springframework/web/method/annotation/ModelFactory.class"
-            ,"org/springframework/web/method/annotation/SessionAttributesHandler.class"
-            ,"org/springframework/web/method/support/ModelAndViewContainer.class"
-            ,"org/springframework/http/CacheControl.class"
-            ,"org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class"
-            ,"org/springframework/boot/web/server/ErrorPageRegistrarBeanPostProcessor.class"
-            ,"org/apache/tomcat/util/descriptor/web/ErrorPage.class"
-            ,"org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class"
-            ,"org/springframework/boot/web/server/ErrorPageRegistrarBeanPostProcessor.class"
-            ,"org/apache/tomcat/util/descriptor/web/ErrorPage.class"
-            ,"org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class"
-            ,"org/springframework/boot/BeanDefinitionLoader.class"
-            ,"org/springframework/boot/SpringBootExceptionHandler.class"
-            ,"org/springframework/beans/factory/support/BeanNameGenerator.class"
-            ,"org/springframework/boot/ExitCodeGenerator.class"
-            ,"org/springframework/boot/logging/LoggerConfiguration.class"
-            ,"org/apache/tomcat/websocket/pojo/PojoMethodMapping.class"
-            ,"com/fasterxml/jackson/databind/ObjectMapper.class"
-            ,"com/fasterxml/jackson/core/io/IOContext.class"
-            ,"ch/qos/logback/classic/spi/ThrowableProxy.class"
-            ,"ch/qos/logback/core/joran/spi/RuleStore.class"
-            ,"ch/qos/logback/core/recovery/ResilientFileOutputStream.class"
-            ,"ch/qos/logback/core/recovery/ResilientOutputStreamBase.class"
-            ,"com/fasterxml/jackson/core/format/MatchStrength.class"
-            ,"com/fasterxml/jackson/core/format/InputAccessor.class"
-            ,"ch/qos/logback/core/joran/action/Action.class"
-            ,"ch/qos/logback/classic/spi/ThrowableProxyUtil.class"
-            ,"ch/qos/logback/core/joran/action/ImplicitAction.class"
-            ,"org/springframework/beans/factory/config/BeanDefinitionCustomizer.class"
-            ,"org/apache/catalina/loader/ResourceEntry.class"
-            ,"kotlin/KotlinVersion.class"
-            ,"kotlin/reflect/jvm/internal/ReflectionFactoryImpl.class"
-            ,"org/apache/tomcat/websocket/server/WsHttpUpgradeHandler.class"
-            ,"org/apache/tomcat/websocket/pojo/PojoEndpointServer.class"
-            ,"org/springframework/beans/factory/support/AutowireCandidateQualifier.class"
-            ,"org/springframework/web/cors/UrlBasedCorsConfigurationSource.class"
-            ,"com/fasterxml/**"
-            ,"ch/qos/**"
-
-//            ,"org/apache/logging/log4j/spi/AbstractLogger.class" //graal spring-feature
-//            ,"org/apache/logging/log4j/spi/LocationAwareLogger.class" //graal spring-feature
-//            ,"org/apache/logging/log4j/message/Message.class" //graal spring-feature
-//            ,"org/apache/logging/log4j/LoggingException.class" //graal spring-feature
-//            ,"org/apache/logging/log4j/message/MessageFactory2.class" //graal spring-feature
 
 
 //            //GRAAL 192
@@ -377,8 +239,54 @@ public class OptimizeClassPath {
 //            "org/springframework/context/i18n/TimeZoneAwareLocaleContext.class"
 //
 //            //JAFU-WEBMVC - Reflection warnings
-              ,"org/springframework/web/bind/annotation/RestController.class"
-              ,"org/springframework/beans/factory/support/BeanDefinitionResource.class"
+//            ,
+//            "org/apache/catalina/TrackedWebResource.class",
+//            "org/springframework/web/servlet/ModelAndView.class",
+//            "org/springframework/web/servlet/handler/RequestMatchResult.class",
+//            "org/springframework/web/bind/annotation/CrossOrigin.class",
+//            "org/springframework/core/io/ProtocolResolver.class",
+//            "org/springframework/web/servlet/handler/AbstractHandlerMapping.class",
+//            "org/springframework/web/HttpRequestHandler.class",
+//            "org/springframework/web/context/request/async/AsyncRequestTimeoutException.class",
+//            "org/springframework/web/servlet/handler/AbstractHandlerMapping.class",
+//            "org/springframework/web/server/ResponseStatusException.class",
+//            "org/springframework/web/method/annotation/ModelFactory.class",
+//            "org/springframework/web/method/annotation/SessionAttributesHandler.class",
+//            "com/fasterxml/jackson/core/io/CharacterEscapes.class",
+//            "com/fasterxml/jackson/databind/module/SimpleValueInstantiators.class",
+//            "com/fasterxml/jackson/databind/InjectableValues.class",
+//            "org/springframework/web/method/support/ModelAndViewContainer.class",
+//            "com/fasterxml/jackson/databind/jsontype/NamedType.class",
+//            "com/fasterxml/jackson/core/io/InputDecorator.class",
+//            "com/fasterxml/jackson/core/FormatSchema.class",
+//            "org/springframework/http/CacheControl.class",
+//            "com/fasterxml/jackson/core/io/OutputDecorator;.class",
+//            "com/fasterxml/jackson/databind/node/ArrayNode.class",
+//            "com/fasterxml/jackson/core/io/OutputDecorator;.class",
+//            "com/fasterxml/jackson/databind/node/ArrayNode.class",
+//            "com/fasterxml/jackson/databind/deser/ValueInstantiator.class",
+//            "org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class",
+//            "org/springframework/boot/web/server/ErrorPageRegistrarBeanPostProcessor.class",
+//            "org/apache/tomcat/util/descriptor/web/ErrorPage.class",
+//            "org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class",
+//            "org/springframework/boot/web/server/ErrorPageRegistrarBeanPostProcessor.class",
+//            "org/apache/tomcat/util/descriptor/web/ErrorPage.class",
+//            "com/fasterxml/jackson/databind/ObjectReader.class",
+//            "com/fasterxml/jackson/core/io/OutputDecorator.class",
+//            "com/fasterxml/jackson/core/JsonFactory.class",
+//            "com/fasterxml/jackson/core/JsonEncoding.class",
+//            "com.fasterxml.jackson.databind.ObjectMapper.class",
+//            "com/fasterxml/jacks.classon/databind/PropertyNamingStrategy.class"
+//
+//            ,
+//            "com/fasterxml/jackson/annotation/JsonInclude.class",
+//            "com/fasterxml/jackson/annotation/JsonAutoDetect.class",
+//            "org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class",
+//            "com/fasterxml/jackson/annotation/JsonSetter.class",
+//            "org/springframework/boot/BeanDefinitionLoader.class",
+//            "org/springframework/boot/SpringBootExceptionHandler.class",
+//            "org/springframework/beans/factory/support/BeanNameGenerator.class",
+//            "org/springframework/boot/ExitCodeGenerator.class"
 
 
             )
@@ -392,21 +300,8 @@ public class OptimizeClassPath {
         //allow all inner class to remain
         int idx = classname.indexOf("$");
         if (idx > 0) {
-            classname = classname.replaceAll("\\$.*\\.class", ".class");
-            present = classnames.contains(classname) || alwaysPresent.contains(classname);
-        }
-        if (present) {
-            return true;
-        }
-
-        //find and match patterns
-        AntPathMatcher matcher = new AntPathMatcher();
-        for (String name : alwaysPresent) {
-            if (name.contains("*")) {
-                if (matcher.match(name, classname)) {
-                    return true;
-                }
-            }
+            String parent = classname.replaceAll("\\$.*\\.class", ".class");
+            return classnames.contains(parent) || alwaysPresent.contains(parent);
         }
         return false;
     }

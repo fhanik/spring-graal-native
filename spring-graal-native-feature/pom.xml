@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>org.springframework.experimental</groupId>
 		<artifactId>spring-graal-native-parent</artifactId>
-		<version>0.6.0.RELEASE</version>
+		<version>0.7.0.BUILD-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>spring-graal-native-feature</artifactId>
-	<version>0.6.0.RELEASE</version>
+	<version>0.7.0.BUILD-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Spring Graal native feature</name>
@@ -30,11 +30,17 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jcl</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-tree</artifactId>
 			<version>7.1</version>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

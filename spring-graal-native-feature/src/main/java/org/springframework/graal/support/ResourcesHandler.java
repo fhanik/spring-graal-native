@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.graalvm.nativeimage.ImageSingletons;
+import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 import org.graalvm.nativeimage.hosted.Feature.BeforeAnalysisAccess;
 import org.springframework.graal.domain.reflect.Flag;
 import org.springframework.graal.domain.resources.ResourcesDescriptor;
@@ -58,7 +59,7 @@ import com.oracle.svm.hosted.FeatureImpl.BeforeAnalysisAccessImpl;
 import com.oracle.svm.hosted.ImageClassLoader;
 
 public class ResourcesHandler {
-	
+
 	private final static String EnableAutoconfigurationKey = "org.springframework.boot.autoconfigure.EnableAutoConfiguration";
 
 	private final static String PropertySourceLoaderKey = "org.springframework.boot.env.PropertySourceLoader";
@@ -115,7 +116,7 @@ public class ResourcesHandler {
 
 	/**
 	 * Some types need reflective access in every Spring Boot application. When hints are scanned
-	 * these 'constants' are registered against the java.lang.Object key. 
+	 * these 'constants' are registered against the java.lang.Object key.
 	 */
 	private void handleSpringConstantHints() {
 		List<CompilationHint> constantHints = ts.findHints("java.lang.Object");
@@ -222,7 +223,7 @@ public class ResourcesHandler {
 				resourcesRegistry.addResources(k.replace(".", "/") + ".class");
 				// Register nested types of the component
 				Type baseType = ts.resolveDotted(k);
-				
+
 				if (baseType != null) {
 					// System.out.println("Checking if type "+baseType+" has transactional methods: "+baseType.hasTransactionalMethods());
 					if (baseType.isTransactional() || baseType.hasTransactionalMethods()) { // TODO should this check the values against this key or for the annotation presence?
@@ -285,10 +286,10 @@ public class ResourcesHandler {
 		}
 		System.out.println("Registered " + registeredComponents + " entries");
 	}
-	
+
 	private void processResponseBodyComponent(Type t) {
 	  // If a controller is marked up @ResponseBody (possibly via @RestController), need to register reflective access to
-	  // the return types of the methods marked @Mapping (meta marked) 
+	  // the return types of the methods marked @Mapping (meta marked)
 	  Collection<Type> returnTypes = t.collectAtMappingMarkedReturnTypes();
 	  SpringFeature.log("Found these return types from Mapped methods in "+t.getName()+" > "+returnTypes);
 	  for (Type returnType: returnTypes ) {
@@ -300,7 +301,7 @@ public class ResourcesHandler {
 	// public interface VisitRepository { ... }
 	// @org.springframework.stereotype.Repository @Transactional public class JpaVisitRepositoryImpl implements VisitRepository { ... }
 	// Need proxy: [org.springframework.samples.petclinic.visit.VisitRepository,org.springframework.aop.SpringProxy,
-	//              org.springframework.aop.framework.Advised,org.springframework.core.DecoratingProxy] 
+	//              org.springframework.aop.framework.Advised,org.springframework.core.DecoratingProxy]
 	// And entering here with r = JpaVisitRepositoryImpl
 	private void processRepository2(Type r) {
 		SpringFeature.log("Processing @oss.Repository annotated "+r.getDottedName());
@@ -317,7 +318,7 @@ public class ResourcesHandler {
 	/**
 	 * Crude basic repository processing - needs more analysis to only add the
 	 * interfaces the runtime will be asking for when requesting the proxy.
-	 * 
+	 *
 	 * @param repositoryName type name of the repository
 	 */
 	private void processRepository(String repositoryName) {
@@ -336,7 +337,7 @@ public class ResourcesHandler {
 		repositoryInterfaces.add("org.springframework.aop.framework.Advised");
 		repositoryInterfaces.add("org.springframework.core.DecoratingProxy");
 		dynamicProxiesHandler.addProxy(repositoryInterfaces);
-		
+
 		// TODO why do we need two proxies here? (vanilla-jpa seems to need both when upgraded from boot 2.2 to 2.3)
 		repositoryInterfaces.clear();
 		repositoryInterfaces.add(type.getDottedName());
@@ -344,6 +345,31 @@ public class ResourcesHandler {
 		repositoryInterfaces.add("org.springframework.aop.framework.Advised");
 		repositoryInterfaces.add("org.springframework.core.DecoratingProxy");
 		dynamicProxiesHandler.addProxy(repositoryInterfaces);
+		
+		
+		// webflux-r2dbc:
+		// Example:
+		// interface ReservationRepository extends ReactiveCrudRepository<Reservation, Integer> {
+		// For this we seem to need:
+		// {"name":"com.example.traditional.Reservation",
+		//  "allDeclaredFields":true,"allDeclaredConstructors":true,"allDeclaredMethods":true,"allPublicMethods":true},
+		// {"name":"com.example.traditional.ReservationRepository",
+		//  "allDeclaredMethods":true,"allPublicMethods":true},
+		// and register the Reservation type 
+		// We don't need this - optimization to have it?
+		// {"name":"com.example.traditional.Reservation_Instantiator_c7cq6j",
+		//  "methods":[{"name":"<init>","parameterTypes":[]}]}
+		if (type.implementsInterface("org/springframework/data/repository/reactive/ReactiveCrudRepository")) {
+			try {
+				RuntimeClassInitialization.initializeAtBuildTime(Class.forName(type.getDottedName()));
+			} catch (ClassNotFoundException cnfe) {
+				throw new IllegalStateException("Unexpected - why can inferred repository "+type.getDottedName()+" not be found?",cnfe);
+			}
+			reflectionHandler.addAccess(type.getDottedName(), Flag.allDeclaredMethods,Flag.allPublicMethods);
+			String typeOfThingsInRepository = type.fetchReactiveCrudRepositoryType(); // For our example this will be Reservation
+			reflectionHandler.addAccess(typeOfThingsInRepository, Flag.allDeclaredConstructors, Flag.allDeclaredMethods,Flag.allDeclaredFields);
+			SpringFeature.log("Dealing with a ReactiveCrudRepository for "+typeOfThingsInRepository);
+		}
 	}
 
 	private void processTransactionalTarget(Type type) {
@@ -354,13 +380,13 @@ public class ResourcesHandler {
 		transactionalInterfaces.add("org.springframework.aop.SpringProxy");
 		transactionalInterfaces.add("org.springframework.aop.framework.Advised");
 		transactionalInterfaces.add("org.springframework.core.DecoratingProxy");
-		dynamicProxiesHandler.addProxy(transactionalInterfaces);	
+		dynamicProxiesHandler.addProxy(transactionalInterfaces);
 		SpringFeature.log("Created transaction related proxy for interfaces: "+transactionalInterfaces);
 	}
 
 	/**
 	 * Walk a type hierarchy and register them all for reflective access.
-	 * 
+	 *
 	 * @param type the type whose hierarchy to register
 	 * @param visited used to remember what has already been visited
 	 * @param typesToMakeAccessible if non null required accesses are collected here rather than recorded directly on the runtime
@@ -624,7 +650,12 @@ public class ResourcesHandler {
 
 	private boolean processType(String config, Set<String> visited) {
 		SpringFeature.log("\n\nProcessing configuration type " + config);
-		boolean b = processType(ts.resolveDotted(config), visited, 0);
+		boolean b = false;
+		try {
+			processType(ts.resolveDotted(config), visited, 0);
+		} catch (MissingTypeException e) {
+
+		}
 		SpringFeature.log("Configuration type " + config + " has " + (b ? "passed" : "failed") + " validation");
 		return b;
 	}
@@ -633,7 +664,7 @@ public class ResourcesHandler {
 	 * Specific type references are used when registering types not easily identifiable from the
 	 * bytecode that we are simply capturing as specific references in the Compilation Hints defined
 	 * in the configuration module. Used for import selectors, import registrars, configuration.
-	 * For @Configuration types here, need only bean method access (not all methods), for 
+	 * For @Configuration types here, need only bean method access (not all methods), for
 	 * other types (import selectors/etc) may not need any method reflective access at all
 	 * (and no resource access in that case).
 	 */
@@ -1013,7 +1044,7 @@ public class ResourcesHandler {
 		}
 		return passesTests;
 	}
-	
+
 	private void registerAnnotationChain(int depth, TypeAccessRequestor tar, List<Type> annotationChain) {
 		SpringFeature.log(spaces(depth) + "attempting registration of " + annotationChain.size()
 				+ " elements of annotation chain");

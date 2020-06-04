@@ -1,1 +1,1 @@
-Copy of Daves app from git@github.com:dsyer/vanilla-orm.git
+Adaptation of Dave Syer app from https://github.com/scratches/vanilla-apps/tree/master/vanilla-orm

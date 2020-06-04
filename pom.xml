@@ -5,7 +5,7 @@
 
 	<groupId>org.springframework.experimental</groupId>
 	<artifactId>spring-graal-native-parent</artifactId>
-	<version>0.6.0.RELEASE</version>
+	<version>0.7.0.BUILD-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Spring Graal native parent</name>
@@ -14,7 +14,8 @@
 
 	<properties>
 		<graalvm.version>20.0.0</graalvm.version>
-		<docs.resources.version>0.2.0.RELEASE</docs.resources.version>
+		<docs.resources.version>0.2.1.RELEASE</docs.resources.version>
+		<spring-framework.version>5.2.6.BUILD-SNAPSHOT</spring-framework.version>
 	</properties>
 
 	<modules>

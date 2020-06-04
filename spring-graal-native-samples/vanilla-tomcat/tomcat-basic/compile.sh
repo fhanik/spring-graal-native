@@ -5,7 +5,7 @@ set -e
 ARTIFACT=tomcat-basic
 MAINCLASS=com.example.tomcat.TomcatOnlyApplication
 VERSION=0.0.1-SNAPSHOT
-FEATURE=../../../../../spring-graal-native/target/spring-graal-native-0.6.0.RELEASE.jar
+FEATURE=../../../../../spring-graal-native/target/spring-graal-native-0.7.0.BUILD-SNAPSHOT.jar
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -24,6 +24,11 @@ rm -f $ARTIFACT
 
 CP=../$JAR
 
+if [ ! -f "$FEATURE" ]; then
+    printf "${RED}FAILURE${NC}: $FEATURE does not exist, please build the root project before building this sample.\n"
+    exit 1
+fi
+
 echo "Generating reflection files for $ARTIFACT"
 rm -rf graal/META-INF 2>/dev/null
 mkdir -p graal/META-INF/native-image
@@ -31,7 +36,18 @@ java -agentlib:native-image-agent=config-output-dir=graal/META-INF/native-image 
 PID=$!
 sleep 3
 curl -m 1 http://localhost:8080 > /dev/null 2>&1
-sleep 1 && kill $PID || kill -9 $PID
+sleep 1 && kill -9 $PID
+
+echo "Performing class analysis on $ARTIFACT"
+java -verbose:class -cp $CP $MAINCLASS >> output.txt 2>&1 &
+PID=$!
+sleep 3
+curl -m 1 http://localhost:8080 > /dev/null 2>&1
+sleep 1 && kill -9 $PID
+
+cat output.txt |grep "\[Loaded" 2>&1 > class_histogram.txt
+
+java -cp $CP:$FEATURE org.springframework.graal.util.OptimizeClassPath `pwd` class_histogram.txt $CP  >> output.txt 2>&1
 
 GRAALVM_VERSION=`native-image --version`
 echo "Compiling $ARTIFACT with $GRAALVM_VERSION"

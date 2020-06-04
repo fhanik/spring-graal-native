@@ -28,10 +28,12 @@
 		<wro4j.version>1.8.0</wro4j.version>
 
 		<jacoco.version>0.8.2</jacoco.version>
+
+		<spring-framework.version>5.2.6.BUILD-SNAPSHOT</spring-framework.version>
 	</properties>
 
 	<dependencies>
-		<!-- Should not be needed -->
+		<!-- Should not be needed, see https://github.com/spring-projects-experimental/spring-graal-native/issues/97 -->
 		<dependency>
 			<groupId>org.reactivestreams</groupId>
 			<artifactId>reactive-streams</artifactId>
