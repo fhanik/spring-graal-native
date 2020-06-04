@@ -24,6 +24,26 @@ cp -R META-INF BOOT-INF/classes
 LIBPATH=`find BOOT-INF/lib | tr '\n' ':'`
 CP=BOOT-INF/classes:$LIBPATH
 
+echo "Performing class analysis on $ARTIFACT"
+rm -f class_histogram.txt
+FEATURE_VERSION=0.8.0-SNAPSHOT
+CLASS_AGENT=$HOME/.m2/repository/org/springframework/experimental/spring-graalvm-native-feature/$FEATURE_VERSION/spring-graalvm-native-feature-$FEATURE_VERSION-classlist-agent.jar
+FEATURE=$HOME/.m2/repository/org/springframework/experimental/spring-graalvm-native-feature/$FEATURE_VERSION/spring-graalvm-native-feature-$FEATURE_VERSION.jar
+rm -rf graal/META-INF 2>/dev/null
+mkdir -p graal/META-INF/native-image
+java -javaagent:$CLASS_AGENT -cp $CP $MAINCLASS >> output.txt 2>&1 &
+PID=$!
+sleep 3
+curl -m 1 http://localhost:8080 > /dev/null 2>&1
+sleep 1 && kill -9 $PID
+
+cat output.txt |grep "Class\-Agent\-Transform\: " 2>&1 > class_histogram.txt
+echo "Starting classpath reduction:"
+java -cp $CP org.springframework.graal.util.OptimizeClassPath `pwd` class_histogram.txt $CP  >> output.txt 2>&1
+grep "^Class\: " output.txt > class_presence.txt
+grep "^Deleted\: " output.txt > class_deleted.txt
+
+
 GRAALVM_VERSION=`native-image --version`
 echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
 { time native-image \
@@ -34,7 +54,9 @@ echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
   -Dspring.native.remove-xml-support=true \
   -Dspring.native.remove-spel-support=true \
   -Dspring.native.remove-jmx-support=true \
-  -cp $CP $MAINCLASS >> output.txt ; } 2>> output.txt
+  --allow-incomplete-classpath \
+  -H:ReflectionConfigurationFiles=../../tomcat-reflection-for-websockets.json \
+  -cp $FEATURE:$CP $MAINCLASS >> output.txt ; } 2>> output.txt
 
 if [[ -f $ARTIFACT ]]
 then

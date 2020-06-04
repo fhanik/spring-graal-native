@@ -1,8 +1,13 @@
 [
+{ "name":"org.springframework.boot.web.server.GracefulShutdownCallback", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
+{ "name":"org.springframework.boot.context.properties.ConfigurationProperties", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
+{ "name":"org.springframework.core.annotation.TypeMappedAnnotation", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
 { "name":"org.apache.tomcat.websocket.server.WsHttpUpgradeHandler", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
 { "name":"org.apache.tomcat.websocket.pojo.PojoEndpointBase", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
 { "name":"org.apache.tomcat.websocket.pojo.PojoEndpointServer", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
 { "name":"org.apache.tomcat.websocket.server.WsContextListener", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
 { "name":"org.apache.tomcat.websocket.server.WsFilter", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
-{ "name":"org.apache.tomcat.websocket.server.WsHttpUpgradeHandler", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true }
+{ "name":"org.apache.tomcat.websocket.server.WsHttpUpgradeHandler", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true },
+{ "name":"org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true,  "methods" : [{ "name" : "<init>", "parameterTypes" : [] }]},
+{ "name":"org.apache.coyote.AbstractProtocol", "allDeclaredConstructors" : true, "allPublicConstructors" : true, "allDeclaredMethods" : true, "allPublicMethods" : true,  "methods" : [{ "name" : "<init>", "parameterTypes" : [] }]}
 ]
