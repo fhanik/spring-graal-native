@@ -1,0 +1,65 @@
+{
+    "bundles": [
+    // vvv springmvc-tomcat
+    {"name":"javax.servlet.LocalStrings"},
+    {"name":"javax.servlet.http.LocalStrings"}
+    // ^^^ springmvc-tomcat
+  ],
+    "resources": [
+    // vvv r2dbc
+    {"pattern": "\\QMETA-INF/services/io.r2dbc.spi.ConnectionFactoryProvider\\E"},
+    // vvv springmvc-tomcat
+    {"pattern": "org/springframework/web/servlet/DispatcherServlet.properties"},
+    {"pattern": "org/apache/catalina/startup/MimeTypeMappings.properties"},
+    // ^^^ springmvc-tomcat
+	// vvv vanilla-tx
+	{"pattern": "org/springframework/context/annotation/AdviceModeImportSelector.class"},
+	{"pattern": "org/springframework/transaction/annotation/ProxyTransactionManagementConfiguration.class"},
+	{"pattern": "org/springframework/transaction/annotation/AbstractTransactionManagementConfiguration.class"},
+	// ^^^ vanilla-tx
+    {"pattern": "db/.*"},
+    {"pattern": "messages/.*"},
+    {"pattern": "static/.*"},
+    {"pattern": "templates/.*"},
+    // vvv petclinic
+    {"pattern": "banner.txt"},
+    {"pattern": "org/springframework/web/util/HtmlCharacterEntityReferences.properties"},
+	{"pattern": "org/springframework/http/mime.types"},
+    {"pattern": "META-INF/spring.components"},
+    {"pattern": "META-INF/spring.factories"},
+    {"pattern": "org/springframework/boot/logging/java/logging.properties"},
+    {"pattern": "META-INF/services/javax.validation.spi.ValidationProvider"}, // make pattern?
+    {"pattern": "hibernate.properties"},
+    {"pattern": "org/hibernate/.*.xsd"},
+    {"pattern": "org/hibernate/.*.dtd"},
+    {"pattern": "application.yml"},
+    {"pattern": "application.properties"},
+    {"pattern": "logging.properties"},
+    {"pattern": "org/springframework/http/codec/CodecConfigurer.properties"},
+    {"pattern": "META-INF/resources/webjars/.*"},
+    
+    // vvv vanilla-jpa
+    {"pattern": "META-INF/jpa-named-queries.properties"},
+    // ^^^ vanilla-jpa
+
+    // vvv vanilla-tx
+    {"pattern": "org/springframework/jdbc/support/sql-error-codes.xml"},
+    {"pattern": "schema.sql"},
+    // ^^^ vanilla-tx
+    
+    // vvv vanilla-rabbit
+    {"pattern": "rabbitmq-amqp-client.properties"},
+    // ^^^ vanilla-rabbit
+    {"pattern": "META-INF/spring.integration.default.properties"},
+
+    // Does this catch the logging/<eachDirectory>/*.properties?
+    {"pattern": "org/springframework/boot/logging/.*.properties"},
+    {"pattern": "org/springframework/boot/logging/.*.xml"},
+
+    // Kotlin
+    {"pattern":"META-INF/.*.kotlin_module$"},
+    {"pattern":"META-INF/services/.*"},
+    {"pattern":".*.kotlin_builtins"}
+  ]
+}
+
