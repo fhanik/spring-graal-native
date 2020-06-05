@@ -204,93 +204,21 @@ public class OptimizeClassPath {
             ,"org/springframework/web/servlet/mvc/method/annotation/ServletRequestDataBinderFactory.class" //graal spring-feature
             ,"org/springframework/core/ReactiveAdapterRegistry.class" //graal spring-feature
 
+//          MAKE SPRINGMVC-TOMCAT WORK
 
-//            //GRAAL 192
-//            "org/apache/coyote/UpgradeToken.class",
-//            "javax/servlet/descriptor/JspConfigDescriptor.class",
-//            "javax/security/auth/message/config/AuthConfigProvider.class",
-//            "org/apache/catalina/authenticator/jaspic/PersistentProviderRegistrations.class",
-//            "org/apache/catalina/core/NamingContextListener.class",
-//            "org/apache/tomcat/util/net/SSLHostConfigCertificate.class",
-//            "javax/servlet/http/HttpServlet.class",
-//            "org/apache/catalina/TomcatPrincipal.class",
-//            "org/apache/tomcat/util/http/parser/TokenList.class",
-//            "org/apache/tomcat/util/http/ValuesEnumerator.class",
-//            "org/apache/tomcat/PeriodicEventListener.class",
-//            "org/apache/tomcat/util/http/parser/TokenList.class",
-//            //GRAAL 200_EE
-//            ,
-//            "javax/servlet/ServletContainerInitializer.class",
-//            "org/apache/tomcat/util/net/SSLContext.class"
-//
-//            //JAFU-WEBMVC
-//            ,
-//            "com/fasterxml/jackson/module/paramnames/ParameterNamesModule.class",
-//            "org/springframework/web/servlet/mvc/method/RequestMappingInfo.class",
-//            "com/fasterxml/jackson/module/paramnames/ParameterNamesAnnotationIntrospector.class",
-//            "com/fasterxml/jackson/annotation/JsonCreator.class",
-//            "org/springframework/web/method/annotation/ExceptionHandlerMethodResolver.class",
 
-//            "org/springframework/web/SpringServletContainerInitializer.class",
-//            "org/apache/logging/log4j/spi/LoggerContext.class",
-//            "org/springframework/web/servlet/mvc/annotation/ModelAndViewResolver.class",
-//            "com/fasterxml/jackson/databind/util/LinkedNode.class",
-//            "com/fasterxml/jackson/databind/ser/FilterProvider.class",
-//            "org/springframework/context/i18n/TimeZoneAwareLocaleContext.class"
-//
-//            //JAFU-WEBMVC - Reflection warnings
-//            ,
-//            "org/apache/catalina/TrackedWebResource.class",
-//            "org/springframework/web/servlet/ModelAndView.class",
-//            "org/springframework/web/servlet/handler/RequestMatchResult.class",
-//            "org/springframework/web/bind/annotation/CrossOrigin.class",
-//            "org/springframework/core/io/ProtocolResolver.class",
-//            "org/springframework/web/servlet/handler/AbstractHandlerMapping.class",
-//            "org/springframework/web/HttpRequestHandler.class",
-//            "org/springframework/web/context/request/async/AsyncRequestTimeoutException.class",
-//            "org/springframework/web/servlet/handler/AbstractHandlerMapping.class",
-//            "org/springframework/web/server/ResponseStatusException.class",
-//            "org/springframework/web/method/annotation/ModelFactory.class",
-//            "org/springframework/web/method/annotation/SessionAttributesHandler.class",
-//            "com/fasterxml/jackson/core/io/CharacterEscapes.class",
-//            "com/fasterxml/jackson/databind/module/SimpleValueInstantiators.class",
-//            "com/fasterxml/jackson/databind/InjectableValues.class",
-//            "org/springframework/web/method/support/ModelAndViewContainer.class",
-//            "com/fasterxml/jackson/databind/jsontype/NamedType.class",
-//            "com/fasterxml/jackson/core/io/InputDecorator.class",
-//            "com/fasterxml/jackson/core/FormatSchema.class",
-//            "org/springframework/http/CacheControl.class",
-//            "com/fasterxml/jackson/core/io/OutputDecorator;.class",
-//            "com/fasterxml/jackson/databind/node/ArrayNode.class",
-//            "com/fasterxml/jackson/core/io/OutputDecorator;.class",
-//            "com/fasterxml/jackson/databind/node/ArrayNode.class",
-//            "com/fasterxml/jackson/databind/deser/ValueInstantiator.class",
-//            "org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class",
-//            "org/springframework/boot/web/server/ErrorPageRegistrarBeanPostProcessor.class",
-//            "org/apache/tomcat/util/descriptor/web/ErrorPage.class",
-//            "org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class",
-//            "org/springframework/boot/web/server/ErrorPageRegistrarBeanPostProcessor.class",
-//            "org/apache/tomcat/util/descriptor/web/ErrorPage.class",
-//            "com/fasterxml/jackson/databind/ObjectReader.class",
-//            "com/fasterxml/jackson/core/io/OutputDecorator.class",
-//            "com/fasterxml/jackson/core/JsonFactory.class",
-//            "com/fasterxml/jackson/core/JsonEncoding.class",
-//            "com.fasterxml.jackson.databind.ObjectMapper.class",
-//            "com/fasterxml/jacks.classon/databind/PropertyNamingStrategy.class"
-//
-//            ,
-//            "com/fasterxml/jackson/annotation/JsonInclude.class",
-//            "com/fasterxml/jackson/annotation/JsonAutoDetect.class",
-//            "org/springframework/boot/autoconfigure/web/servlet/error/DefaultErrorViewResolver.class",
-//            "com/fasterxml/jackson/annotation/JsonSetter.class",
-//            "org/springframework/boot/BeanDefinitionLoader.class",
-//            "org/springframework/boot/SpringBootExceptionHandler.class",
-//            "org/springframework/beans/factory/support/BeanNameGenerator.class",
-//            "org/springframework/boot/ExitCodeGenerator.class"
+
+            //oh boy, let's just add it
+            ,"org/apache/logging/log4j/**/*.class" //springmvc-tomcat
+            ,"ch/qos/**/*.class" //springmvc-tomcat
+            ,"org/springframework/boot/logging/**/*.class" //springmvc-tomcat
+
+
 
 
             )
     );
+
     private static boolean isClassPresent(Set<String> classnames, String classname) {
         boolean present = classnames.contains(classname) || alwaysPresent.contains(classname);
         if (present) {
@@ -300,8 +228,21 @@ public class OptimizeClassPath {
         //allow all inner class to remain
         int idx = classname.indexOf("$");
         if (idx > 0) {
-            String parent = classname.replaceAll("\\$.*\\.class", ".class");
-            return classnames.contains(parent) || alwaysPresent.contains(parent);
+            classname = classname.replaceAll("\\$.*\\.class", ".class");
+            present = classnames.contains(classname) || alwaysPresent.contains(classname);
+        }
+        if (present) {
+            return true;
+        }
+
+        //find and match patterns
+        AntPathMatcher matcher = new AntPathMatcher();
+        for (String name : alwaysPresent) {
+            if (name.contains("*")) {
+                if (matcher.match(name, classname)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -334,5 +275,4 @@ public class OptimizeClassPath {
 
         return classes;
     }
-
 }
