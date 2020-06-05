@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-cd spring-graal-native
-. ci/setup.sh
+cd spring-graalvm-native
 ./build.sh
 ./build-key-samples.sh

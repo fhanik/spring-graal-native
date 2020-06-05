@@ -1,56 +1,209 @@
 resources:
-  - name: spring-graal-native
+  - name: spring-graalvm-native
     type: git
     source:
-      uri: https://github.com/spring-projects-experimental/spring-graal-native
+      uri: https://github.com/spring-projects-experimental/spring-graalvm-native
       branch: master
   - name: every-day
     type: time
     source: {interval: 24h}
+  - name: graalvm-ce-20.1-dev-java8-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/graalvm-ce
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: 20.1-dev-java8
+  - name: graalvm-ce-20.1-dev-java11-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/graalvm-ce
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: 20.1-dev-java11
+  - name: graalvm-ce-master-java8-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/graalvm-ce
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: master-java8
+  - name: graalvm-ce-master-java11-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/graalvm-ce
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: master-java11
+  - name: spring-graalvm-native-20.1-dev-java8-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/spring-graalvm-native
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: 20.1-dev-java8
+  - name: spring-graalvm-native-20.1-dev-java11-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/spring-graalvm-native
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: 20.1-dev-java11
+  - name: spring-graalvm-native-master-java8-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/spring-graalvm-native
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: master-java8
+  - name: spring-graalvm-native-master-java11-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: springci/spring-graalvm-native
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      tag: master-java11
 jobs:
   - name: java8-key-samples-build
-    old_name: java8-build-key-samples
     public: true
     plan:
-    - get: spring-graal-native
+    - get: spring-graalvm-native
       trigger: true
     - task: build
-      file: spring-graal-native/ci/java8-key-samples-build.yml
+      file: spring-graalvm-native/ci/java8-key-samples-build.yml
   - name: java11-key-samples-build
     public: true
     plan:
-      - get: spring-graal-native
+      - get: spring-graalvm-native
         trigger: true
       - task: build
-        file: spring-graal-native/ci/java11-key-samples-build.yml
-  - name: java8-samples-build
+        file: spring-graalvm-native/ci/java11-key-samples-build.yml
+  - name: 20.1-dev-java8-samples-build
+    old_name: java8-samples-build
     public: true
     plan:
-      - get: spring-graal-native
-      - get: every-day
+      - get: spring-graalvm-native
+        passed: [build-spring-graalvm-native-images]
         trigger: true
       - task: build
-        file: spring-graal-native/ci/java8-samples-build.yml
-  - name: java11-samples-build
+        file: spring-graalvm-native/ci/20.1-dev-java8-samples-build.yml
+  - name: 20.1-dev-java11-samples-build
+    old_name: java11-samples-build
     public: true
     plan:
-      - get: spring-graal-native
-      - get: every-day
+      - get: spring-graalvm-native
+        passed: [build-spring-graalvm-native-images]
         trigger: true
       - task: build
-        file: spring-graal-native/ci/java11-samples-build.yml
+        file: spring-graalvm-native/ci/20.1-dev-java11-samples-build.yml
+  - name: master-java8-samples-build
+    public: true
+    plan:
+      - get: spring-graalvm-native
+        passed: [build-spring-graalvm-native-images]
+        trigger: true
+      - task: build
+        file: spring-graalvm-native/ci/master-java8-samples-build.yml
+  - name: master-java11-samples-build
+    public: true
+    plan:
+      - get: spring-graalvm-native
+        passed: [build-spring-graalvm-native-images]
+        trigger: true
+      - task: build
+        file: spring-graalvm-native/ci/master-java11-samples-build.yml
   - name: deploy
     public: true
     plan:
-      - get: spring-graal-native
+      - get: spring-graalvm-native
         passed:
           - java8-key-samples-build
+          - java11-key-samples-build
         trigger: true
       - task: deploy
-        file: spring-graal-native/ci/deploy.yml
+        file: spring-graalvm-native/ci/deploy.yml
         params:
           ARTIFACTORY_USERNAME: ((artifactory_username))
           ARTIFACTORY_PASSWORD: ((artifactory_password))
+  - name: build-graalvm-ce-images
+    public: true
+    serial: true
+    plan:
+      - get: spring-graalvm-native
+      - get: every-day
+        trigger: true
+      - in_parallel:
+          - put: graalvm-ce-20.1-dev-java8-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.graalvm-ce
+              build_args:
+                JVMCI_URL: https://github.com/graalvm/graal-jvmci-8/releases/download/jvmci-20.1-b02/openjdk-8u252+09-jvmci-20.1-b02-linux-amd64.tar.gz
+                GRAALVM_BRANCH: release/graal-vm/20.1
+          - put: graalvm-ce-20.1-dev-java11-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.graalvm-ce
+              build_args:
+                JVMCI_URL: https://github.com/graalvm/labs-openjdk-11/releases/download/jvmci-20.1-b02/labsjdk-ce-11.0.7+10-jvmci-20.1-b02-linux-amd64.tar.gz
+                GRAALVM_BRANCH: release/graal-vm/20.1
+          - put: graalvm-ce-master-java8-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.graalvm-ce
+              build_args:
+                JVMCI_URL: https://github.com/graalvm/graal-jvmci-8/releases/download/jvmci-20.1-b02/openjdk-8u252+09-jvmci-20.1-b02-linux-amd64.tar.gz
+                GRAALVM_BRANCH: master
+          - put: graalvm-ce-master-java11-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.graalvm-ce
+              build_args:
+                JVMCI_URL: https://github.com/graalvm/labs-openjdk-11/releases/download/jvmci-20.1-b02/labsjdk-ce-11.0.7+10-jvmci-20.1-b02-linux-amd64.tar.gz
+                GRAALVM_BRANCH: master
+  - name: build-spring-graalvm-native-images
+    public: true
+    serial: true
+    plan:
+      - get: spring-graalvm-native
+        passed: [build-graalvm-ce-images]
+        trigger: true
+      - in_parallel:
+          - put: spring-graalvm-native-20.1-dev-java8-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.spring-graalvm-native
+              build_args:
+                BASE_IMAGE: springci/graalvm-ce:20.1-dev-java8
+          - put: spring-graalvm-native-20.1-dev-java11-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.spring-graalvm-native
+              build_args:
+                BASE_IMAGE: springci/graalvm-ce:20.1-dev-java11
+          - put: spring-graalvm-native-master-java8-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.spring-graalvm-native
+              build_args:
+                BASE_IMAGE: springci/graalvm-ce:master-java8
+          - put: spring-graalvm-native-master-java11-image
+            params:
+              build: spring-graalvm-native/docker
+              dockerfile: spring-graalvm-native/docker/Dockerfile.spring-graalvm-native
+              build_args:
+                BASE_IMAGE: springci/graalvm-ce:master-java11
+
 groups:
-  - name: "Build"
-    jobs: ["java8-key-samples-build", "java11-key-samples-build", "java8-samples-build", "java11-samples-build", "deploy"]
+  - name: "Each commit builds"
+    jobs: ["java8-key-samples-build", "java11-key-samples-build", "deploy"]
+  - name: "Daily builds"
+    jobs: ["build-graalvm-ce-images", "build-spring-graalvm-native-images", "20.1-dev-java8-samples-build", "20.1-dev-java11-samples-build", "master-java8-samples-build", "master-java11-samples-build"]
