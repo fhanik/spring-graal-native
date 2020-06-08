@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 RESPONSE=`curl -s localhost:8080/`
-if [[ "$RESPONSE" == '{"message":"hi!"}' ]]; then
+if [[ "$RESPONSE" == 'hi!' ]]; then
   exit 0
 else
   exit 1

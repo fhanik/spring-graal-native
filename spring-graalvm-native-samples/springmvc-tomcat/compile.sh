@@ -24,6 +24,24 @@ cp -R META-INF BOOT-INF/classes
 LIBPATH=`find BOOT-INF/lib | tr '\n' ':'`
 CP=BOOT-INF/classes:$LIBPATH
 
+echo "Performing class analysis on $ARTIFACT"
+rm -f class_histogram.txt
+CLASS_AGENT=../../../../spring-graalvm-native-feature/target/spring-graalvm-native-feature-0.7.0.BUILD-SNAPSHOT-classlist-agent.jar
+rm -rf graal/META-INF 2>/dev/null
+mkdir -p graal/META-INF/native-image
+java -javaagent:$CLASS_AGENT -cp $CP $MAINCLASS >> output.txt 2>&1 &
+PID=$!
+sleep 3
+curl -m 1 http://localhost:8080 > /dev/null 2>&1
+sleep 1 && kill -9 $PID
+
+cat output.txt |grep "Class\-Agent\-Transform\: " 2>&1 > class_histogram.txt
+echo "Starting classpath reduction:"
+java -cp $CP:$FEATURE org.springframework.graal.util.OptimizeClassPath `pwd` class_histogram.txt $CP  >> output.txt 2>&1
+grep "^Class\: " output.txt > class_presence.txt
+grep "^Deleted\: " output.txt > class_deleted.txt
+
+
 GRAALVM_VERSION=`native-image --version`
 echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
 { time native-image \
