@@ -221,7 +221,12 @@ public class OptimizeClassPath {
             ,"org/springframework/web/bind/MissingServletRequestParameterException.class" //jafu with websocket
 
             //discovered today, 6/8/20
-            ,"org/springframework/context/annotation/AnnotationConfigApplicationContext.class" //springmvc-tomcat
+//            ,"javax/validation/ValidationException.class" //springmvc-tomcat
+//            ,"org/springframework/jdbc/CannotGetJdbcConnectionException.class" //springmvc-tomcat
+            ,"org/springframework/boot/autoconfigure/admin/SpringApplicationAdminJmxAutoConfiguration.class" //springmvc-tomcat
+            ,"**/Hints.class" //springmvc-tomcat
+            ,"org/springframework/data/SpringDataComponentProcessor.class" //springmvc-tomcat
+            ,"org/springframework/boot/autoconfigure/**/*AutoConfiguration.class" //springmvc-tomcat
             )
     );
 
