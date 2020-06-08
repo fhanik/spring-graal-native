@@ -13,9 +13,8 @@ mkdir -p target/native-image
 
 rm -rf target/native-image
 mkdir -p target/native-image
-echo "Packaging $ARTIFACT with Maven"
-#mvn -DskipTests package > target/native-image/output.txt
-./gradlew build
+echo "Packaging $ARTIFACT with Gradle"
+./gradlew build > target/native-image/output.txt
 
 JAR="$ARTIFACT-$VERSION.jar"
 rm -f $ARTIFACT
@@ -30,13 +29,8 @@ CP=BOOT-INF/classes:$LIBPATH
 GRAALVM_VERSION=`native-image --version`
 echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
 { time native-image \
-  -H:EnableURLProtocols=http,jar \
-  -H:+TraceClassInitialization \
+  -H:EnableURLProtocols=http \
   -H:Name=$ARTIFACT \
-  -H:+ReportExceptionStackTraces \
-  --no-fallback \
-  -Dsun.rmi.transport.tcp.maxConnectionThreads=0 \
-  -Dspring.native.remove-unused-autoconfig=true \
   -Dspring.native.remove-yaml-support=true \
   -cp $CP $MAINCLASS >> output.txt ; } 2>> output.txt
 
