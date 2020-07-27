@@ -1,4 +1,4 @@
-package org.springframework.graalvm.maven;
+package org.springframework.graalvm.maven.tomcat;
 
 
 import java.io.File;
@@ -36,7 +36,7 @@ import org.apache.maven.project.MavenProjectHelper;
 /**
  * Goal which touches a timestamp file.
  */
-@Mojo(name = "spring-graalvm-optimize-jar", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true,
+@Mojo(name = "spring-graalvm-optimize-jar", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = false,
     requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
     requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class BootOptimizerForApacheTomcat

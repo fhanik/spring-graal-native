@@ -60,6 +60,17 @@
 				<artifactId>spring-graalvm-library-optimizer</artifactId>
 				<executions>
 					<execution>
+						<id>remove-tomcat-reflection</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>spring-graalvm-remove-tomcat-reflection</goal>
+						</goals>
+						<configuration>
+							<enabled>true</enabled>
+							<generatedSourcesLocation>generated/src/main/java/</generatedSourcesLocation>
+						</configuration>
+					</execution>
+					<execution>
 						<id>optimize-tomcat</id>
 						<phase>package</phase>
 						<goals>
@@ -143,7 +154,7 @@
 	</pluginRepositories>
 
 	<profiles>
-	       <profile>
+		   <profile>
 			<id>hybrid-native</id>
 			<build>
 				<plugins>
